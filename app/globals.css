@@ -1,29 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
 :root {
   color-scheme: dark;
+  --garage-bg: #070a0d;
+  --garage-panel: rgba(12, 18, 23, 0.82);
+  --garage-line: rgba(255, 255, 255, 0.12);
+  --garage-cyan: #55e6df;
+  --garage-amber: #f6bd45;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100%; background: var(--garage-bg); color: #fff; }
+body { min-height: 100vh; font-family: 'Barlow Condensed', Arial, Helvetica, sans-serif; background-image: radial-gradient(circle at 50% -10%, rgba(48, 93, 104, .28), transparent 38%), linear-gradient(135deg, #070a0d, #10181d 48%, #070a0d); }
+button { font: inherit; cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+a { color: inherit; text-decoration: none; }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-  background: #0d1117;
-  color: white;
-  font-family: Arial, Helvetica, sans-serif;
-}
+.garage-glass { background: var(--garage-panel); border: 1px solid var(--garage-line); box-shadow: 0 20px 60px rgba(0,0,0,.32), inset 0 1px rgba(255,255,255,.05); backdrop-filter: blur(18px); }
+.garage-grid { background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 44px 44px; }
+.garage-vignette::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,.58) 100%); }
+.race-road { background: linear-gradient(90deg, #11161b 0 10%, #343a40 10% 90%, #11161b 90%); box-shadow: inset 0 0 70px rgba(0,0,0,.8); }
+.race-road::before { content: ''; position: absolute; inset: 0 12%; background: repeating-linear-gradient(90deg, transparent 0 31%, rgba(255,255,255,.75) 31% 32%, transparent 32% 66%); opacity: .18; }
+.race-neon { box-shadow: 0 0 22px rgba(85,230,223,.32), inset 0 0 16px rgba(85,230,223,.08); }
 
-button {
-  font: inherit;
-}
-
-body {
-  min-height: 100vh;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
