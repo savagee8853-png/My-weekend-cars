@@ -1,0 +1,111 @@
+# Cold Start — Combined Source
+# This file combines the project files currently confirmed in the feature/car-game-site branch.
+# Repository: https://github.com/savagee8853-png/My-weekend-cars
+# Branch: feature/car-game-site
+
+============================================================
+FILE: package.json
+============================================================
+{
+  "name": "cold-start-garage-game",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.2.15",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.0.0",
+    "@types/node": "20.14.12",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "typescript": "5.5.4"
+  }
+}
+
+============================================================
+FILE: netlify.toml
+============================================================
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+============================================================
+FILE: next.config.mjs
+============================================================
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "export",
+  images: {
+    unoptimized: true,
+  },
+};
+
+export default nextConfig;
+
+============================================================
+FILE: app/layout.tsx
+============================================================
+import "./globals.css";
+
+export const metadata = {
+  title: "Cold Start — Beta",
+  description: "Cold Start is an original mechanic garage and street racing game in beta testing.",
+};
+
+function BetaBanner() {
+  return (
+    <div className="fixed inset-x-0 top-0 z-[200] flex min-h-9 items-center justify-center gap-3 border-b border-amber-300/25 bg-[#17130b]/95 px-3 py-2 text-center text-[10px] uppercase tracking-[0.18em] text-amber-100 shadow-lg backdrop-blur-md">
+      <span className="rounded-full border border-amber-300/60 bg-amber-300/15 px-2 py-0.5 font-bold text-amber-200">Beta</span>
+      <span className="hidden sm:inline">Cold Start is in active development</span>
+      <a href="mailto:cold-start-feedback@example.com?subject=Cold%20Start%20Beta%20Feedback" className="text-cyan-200 underline decoration-cyan-200/50 underline-offset-4 hover:text-cyan-100">
+        Send feedback
+      </a>
+    </div>
+  );
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body>
+        <BetaBanner />
+        <div className="pt-9">{children}</div>
+      </body>
+    </html>
+  );
+}
+
+============================================================
+FILE: app/page.tsx
+============================================================
+import { GarageSceneDemo } from "@/components/garage/GarageSceneDemo";
+
+export default function Page() {
+  return (
+    <>
+      <a
+        href="/diagnostics"
+        className="fixed right-4 top-4 z-[100] rounded-full border border-cyan-300/40 bg-slate-950/90 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200 shadow-xl backdrop-blur-md"
+      >
+        Open Diagnostics Lab
+      </a>
+      <GarageSceneDemo />
+    </>
+  );
+}
