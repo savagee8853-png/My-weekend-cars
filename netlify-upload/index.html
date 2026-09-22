@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cold Start — Beta</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { color-scheme: dark; }
+    html, body { margin: 0; min-height: 100%; }
+    body { min-height: 100vh; color: #fff; background: radial-gradient(circle at top, #172554 0, #070b14 48%, #020617 100%); font-family: Arial, Helvetica, sans-serif; }
+    button { font: inherit; }
+    .page { width: min(1180px, 92vw); margin: 0 auto; padding: 28px 0 42px; }
+    .banner { text-align: center; color: #fde68a; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 18px; }
+    .hud { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .badge { border: 1px solid #fbbf24; color: #111827; background: #f59e0b; border-radius: 999px; padding: 5px 9px; font-size: 10px; font-weight: 800; letter-spacing: .12em; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 0; font-size: clamp(2rem, 5vw, 3.2rem); }
+    .primary { border: 0; border-radius: 12px; padding: 12px 18px; color: #04130a; background: linear-gradient(135deg, #4ade80, #16a34a); font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px #22c55e55; }
+    .primary:hover { filter: brightness(1.1); }
+    .garage { display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; }
+    .panel { background: #0f172acc; border: 1px solid #94a3b833; border-radius: 20px; padding: 18px; box-shadow: 0 18px 40px #00000040; }
+    .panel h2 { margin-bottom: 16px; }
+    .car-list { display: grid; gap: 14px; }
+    .car-card { width: 100%; display: flex; align-items: center; gap: 14px; color: #fff; text-align: left; background: #0f172aed; border: 1px solid #60a5fa33; border-radius: 14px; padding: 12px; cursor: pointer; }
+    .car-card:hover, .car-card.selected { border-color: #38bdf8; box-shadow: 0 0 0 1px #38bdf866; }
+    .car-visual { width: 100px; height: 58px; position: relative; overflow: hidden; flex: 0 0 auto; border-radius: 12px; border: 1px solid #ffffff26; }
+    .car-body { position: absolute; left: 10px; right: 10px; bottom: 12px; height: 18px; border-radius: 10px 12px 8px 8px; background: #ffffff40; box-shadow: inset 0 -8px 12px #00000033; }
+    .car-body::before, .car-body::after { content: ""; position: absolute; bottom: -6px; width: 12px; height: 12px; border-radius: 50%; background: #020617; border: 2px solid #94a3b8; }
+    .car-body::before { left: 10px; } .car-body::after { right: 10px; }
+    .window { position: absolute; left: 28px; right: 28px; top: 4px; height: 8px; border-radius: 8px; background: #ffffff66; }
+    .car-meta { display: flex; flex-direction: column; gap: 5px; }
+    .car-meta strong { font-size: 1.05rem; }
+    .car-meta span, .eyebrow { color: #cbd5e1; font-size: .78rem; }
+    .stats-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .eyebrow { margin-bottom: 8px; text-transform: uppercase; letter-spacing: .12em; color: #94a3b8; }
+    .stats-header h3 { margin-bottom: 0; font-size: 1.7rem; }
+    .rating { width: 64px; height: 64px; display: grid; place-items: center; border-radius: 50%; border: 2px solid #38bdf899; background: radial-gradient(circle, #0ea5e9, #0f172a); font-size: 1.1rem; font-weight: 800; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .stat-box { background: #0f172ae6; border: 1px solid #94a3b826; border-radius: 14px; padding: 14px 10px; text-align: center; }
+    .stat-box .label { display: block; color: #cbd5e1; margin-bottom: 10px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+    .bar { height: 10px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: #94a3b826; }
+    .bar span { display: block; height: 100%; border-radius: 999px; }
+    .status { padding: 14px 16px; border: 1px solid #10b98140; border-radius: 12px; background: #10b98114; }
+    .status p { margin-bottom: 8px; color: #a7f3d0; font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; }
+    @media (max-width: 800px) { .garage { grid-template-columns: 1fr; } .hud { align-items: flex-start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="banner">Cold Start is in active development · Beta</div>
+    <header class="hud">
+      <div class="brand"><span class="badge">BETA</span><h1>Cold Start</h1></div>
+      <button class="primary" id="raceButton">Race Weekend</button>
+    </header>
+    <section class="garage">
+      <div class="panel"><h2>Garage</h2><div class="car-list" id="carList"></div></div>
+      <div class="panel">
+        <div class="stats-header"><div><p class="eyebrow">Selected Build</p><h3 id="selectedName"></h3></div><div class="rating" id="rating"></div></div>
+        <div class="stat-grid" id="stats"></div>
+        <div class="status"><p>Status</p><strong id="statusText">Garage ready</strong></div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const cars = [
+      { name: "Comet", speed: 82, handling: 74, power: 78, color: "#38bdf8" },
+      { name: "Rust V8", speed: 88, handling: 68, power: 92, color: "#f59e0b" },
+      { name: "Nightline", speed: 76, handling: 90, power: 70, color: "#a78bfa" },
+      { name: "Drift GT", speed: 80, handling: 94, power: 72, color: "#34d399" }
+    ];
+    let selected = 0;
+    const list = document.getElementById("carList");
+    const selectedName = document.getElementById("selectedName");
+    const rating = document.getElementById("rating");
+    const stats = document.getElementById("stats");
+    const statusText = document.getElementById("statusText");
+    const statData = [["Speed", "speed", "#38bdf8"], ["Handling", "handling", "#34d399"], ["Power", "power", "#f59e0b"]];
+    function draw() {
+      list.innerHTML = cars.map((car, i) => `<button class="car-card ${i === selected ? "selected" : ""}" data-index="${i}"><div class="car-visual" style="background:linear-gradient(135deg, ${car.color}, #0f172a)"><div class="car-body"><div class="window"></div></div></div><div class="car-meta"><strong>${car.name}</strong><span>${i === selected ? "Selected build" : "Ready"}</span></div></button>`).join("");
+      document.querySelectorAll(".car-card").forEach(button => button.addEventListener("click", () => { selected = Number(button.dataset.index); statusText.textContent = "Garage ready"; draw(); }));
+      const car = cars[selected];
+      selectedName.textContent = car.name;
+      rating.textContent = car.speed + car.handling + car.power;
+      stats.innerHTML = statData.map(([label, key, color]) => `<div class="stat-box"><span class="label">${label}</span><strong>${car[key]}</strong><div class="bar"><span style="width:${car[key]}%;background:${color}"></span></div></div>`).join("");
+    }
+    document.getElementById("raceButton").addEventListener("click", () => { const car = cars[selected]; const score = car.speed * .45 + car.handling * .35 + car.power * .2 + Math.random() * 30; statusText.textContent = score > 180 ? `${car.name} wins the weekend race!` : `${car.name} needs one more tune-up.`; });
+    draw();
+  </script>
+</body>
+</html>
